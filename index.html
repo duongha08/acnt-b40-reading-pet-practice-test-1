@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambridge B1 Preliminary Reading - Test 1</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f6f9;
+            color: #333;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .panel {
+            padding: 25px;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        #left-panel {
+            width: 50%;
+            background-color: #ffffff;
+            line-height: 1.65;
+            font-size: 1.05rem;
+            user-select: text;
+        }
+
+        #right-panel {
+            width: 50%;
+            background-color: #f8fafc;
+            border-left: 1px solid #cbd5e1;
+        }
+
+        .resizer {
+            width: 10px;
+            background: #e2e8f0;
+            cursor: col-resize;
+            z-index: 5;
+            transition: background 0.2s;
+        }
+
+        .resizer:hover, .resizer:active {
+            background: #94a3b8;
+        }
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #cbd5e1;
+            padding-bottom: 6px;
+        }
+
+        .reading-part-content {
+            margin-bottom: 45px;
+        }
+
+        .reading-part-content p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        .notice-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid #3b82f6;
+            padding: 14px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+
+        .home-card {
+            background: #f1f5f9;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .question-block {
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .options-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            transition: all 0.2s;
+        }
+
+        .option-item:hover {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+
+        .option-item input {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .select-box, .text-input {
+            padding: 9px 12px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background-color: #fff;
+            color: #1e293b;
+            outline: none;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .select-box:focus, .text-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .hl-yellow {
+            background-color: #fef08a;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+        
+        .hl-yellow:hover {
+            background-color: #fde047;
+            text-decoration: line-through;
+        }
+
+        .tooltip-info {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            color: #1d4ed8;
+            padding: 10px 12px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+        }
+
+        /* Khu vực tổng hợp đáp án cuối mỗi phần */
+        .summary-box {
+            background: #fffbeb;
+            border: 2px dashed #f59e0b;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 25px;
+            margin-bottom: 45px;
+        }
+
+        .summary-title {
+            font-weight: bold;
+            color: #b45309;
+            margin-bottom: 10px;
+        }
+
+        .result-string {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            border: 1px solid #cbd5e1;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            word-break: break-all;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 9px 18px;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .btn-update {
+            background-color: #475569;
+            color: white;
+        }
+
+        .btn-update:hover {
+            background-color: #334155;
+        }
+
+        .btn-copy {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background-color: #15803d;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Cambridge B1 Preliminary Reading - Test 1
+    </header>
+
+    <div class="container">
+        <!-- BÊN TRÁI: NỘI DUNG BÀI ĐỌC -->
+        <div id="left-panel" class="panel">
+            <div class="tooltip-info">
+                💡 <b>Mẹo làm bài:</b> Bôi đen đoạn văn bất kỳ để <b>Highlight</b> màu vàng. Bấm vào đoạn đã tô để <b>Xóa Highlight</b>. Kéo thanh ở giữa để điều chỉnh độ rộng màn hình.
+            </div>
+            
+            <div id="reading-content">
+                <!-- PART 1 -->
+                <div class="reading-part-content">
+                    <div class="section-title">Part 1 - Notices & Messages (Questions 1-5)</div>
+                    
+                    <div class="notice-box">
+                        <b>1.</b><br>
+                        Children must not be left unattended in the play area at any time during their visit.
+                    </div>
+                    
+                    <div class="notice-box">
+                        <b>2.</b><br>
+                        Hi Tim, Isa called for you earlier. I said you'd be in after 4pm. Remember you need to pick up that letter from the post office. You need to take your ID and sign for it. <i>Angus</i>
+                    </div>
+                    
+                    <div class="notice-box">
+                        <b>3.</b><br>
+                        Dear Customers,<br>
+                        Store capacity is now reduced.<br>
+                        Please queue to the left.
+                    </div>
+                    
+                    <div class="notice-box">
+                        <b>4.</b><br>
+                        Loyalty card available. Buy 10 hot drinks and we will give you another free of charge the next time you visit.
+                    </div>
+                    
+                    <div class="notice-box">
+                        <b>5.</b><br>
+                        To all employees,<br>
+                        Because of essential building work, the coffee room will be closed until further notice.
+                    </div>
+                </div>
+
+                <!-- PART 2 -->
+                <div class="reading-part-content">
+                    <div class="section-title">Part 2 - Accommodation Available (Questions 6-10)</div>
+                    <p><i>The people in the questions are all looking for a new place to live. Below are descriptions of eight potential homes.</i></p>
+                    
+                    <div class="home-card">
+                        <b>A.</b> A four-bedroom, semi-detached house with a garage and extra parking is available from September. Large garden. Pets welcome. Easy access to the motorway and town centre. Close to several outstanding schools.
+                    </div>
+                    <div class="home-card">
+                        <b>B.</b> A shared house with four students who like to party. The room is inexpensive and situated in Dobberton, just ten miles from Cambridge. You'll need a car, but we have lots of space for parking.
+                    </div>
+                    <div class="home-card">
+                        <b>C.</b> Fully furnished luxury flat available for short-term lease. One bedroom, shower and bath, elevator and underground parking. All the modern conveniences. Owners prefer a single person.
+                    </div>
+                    <div class="home-card">
+                        <b>D.</b> Room available in a flat with one other person. The room is spacious and airy, and inexpensive for its location, a two-minute walk from a bus stop and five minutes from the train station.
+                    </div>
+                    <div class="home-card">
+                        <b>E.</b> A detached four-bedroom home is available near the old St Andrew's school site, located on the edge of town. Good access to all parts of town using the motorway. A family preferred. No pets though.
+                    </div>
+                    <div class="home-card">
+                        <b>F.</b> A country cottage surrounded by tranquil countryside. Two bedrooms and one studio for home-working or study. Large garden. Pets welcome. Pre-installed security system and a good internet connection.
+                    </div>
+                    <div class="home-card">
+                        <b>G.</b> Double room available in a small house with off-street parking. To share with studious 3rd year uni student who is often away at the weekend.
+                    </div>
+                    <div class="home-card">
+                        <b>H.</b> Attic-type apartment available in the city centre. Large, quiet, open-plan space. Located just beside Coldham's park. Minimum 12-month contract.
+                    </div>
+                </div>
+
+                <!-- PART 3 -->
+                <div class="reading-part-content">
+                    <div class="section-title">Part 3 - Violinist Alaina Masters talks about her job</div>
+                    <p>I have always worked hard at mastering my instrument. That goes without saying. But ever since entering music college I was aware of how important it is to network with people. Since then, I've never really looked back and I am very happy to say that I've always managed to keep working.</p>
+                    <p>When it comes to finding work, people who work for themselves, like me, must have various ways of making an income. I always need to be looking for jobs, or gigs, as musicians call temporary pieces of work. Those might come from orchestras or with smaller groups, such as the string quartet and jazz trio I usually play with.</p>
+                    <p>I used to teach from time to time, but because I need to be available when a job comes up, I can't commit to having students anymore. It's a shame because I really enjoyed it.</p>
+                    <p>The work with orchestras is always in the metropolitan area, which is handy for me. When I have one of those gigs, we will rehearse during the day in the weeks before the show starts. Those sessions are hard work and very tiring, but there is a social element to them and that helps get us through. Then we'll do a performance every night for the duration of the show, two on a weekend with some productions. That is always exciting and it's when I am in my element. The performances make all the effort worthwhile.</p>
+                    <p>With my string quartet we play at weddings or other events, and that sometimes involves travelling. I don't drive, but thankfully one of the others is usually able to give me a ride, and we travel together for the concert. We try to always come back to our own beds afterwards, as paying for accommodation would use almost all our profits from the show.</p>
+                    <p>Playing an instrument as a hobby and doing it to earn a living are quite different though. Thankfully, I have always maintained the love of what I do, so really, I never feel like I'm working.</p>
+                </div>
+
+                <!-- PART 4 -->
+                <div class="reading-part-content">
+                    <div class="section-title">Part 4 - The Streaming Phenomenon</div>
+                    <p>Watching the latest movies and series on demand is undoubtedly the biggest change in entertainment in the 21st century. The emergence of services such as Netflix and Disney Plus have revolutionised the way we watch TV, and how the TV and cinema industry function forever. Music listening is following a similar model. <b>[16]</b> Gideon McFluff explains.</p>
+                    <p>When people started making movies, they sold their product directly through the cinema theatres. <b>[17]</b> It formed a lucrative industry for everyone involved. Many became rich and famous. Millions more around the world also earned a living, such as the camera operators, the make-up artists or the ice cream sellers in the theatre. And so it continued for many years.</p>
+                    <p>Piracy - copying movies or music and then selling them illegally to individuals to watch at home - became a problem in the 1980s and early 90s. <b>[18]</b> Sites such as Napster offered users the option to share movies and music for free. People no longer had to pay for what they watched or listened to. Something had to be done.</p>
+                    <p>As internet technology has become more powerful, the necessary means have arrived in our homes. Broadband and fibre optic capability has enabled us to receive images and audio in real time. <b>[19]</b></p>
+                    <p>With such developments, companies now offer a convenient and legal way to watch your favourite media productions. <b>[20]</b> What distinguishes one from the other is the available content. These companies need the most popular movies and series to attract subscribers. We have seen the streaming companies become the financiers of movies and series, enabling media companies to invest in top-quality productions.</p>
+                    
+                    <div class="notice-box" style="margin-top: 15px;">
+                        <b>Removed Sentences (A-H):</b><br>
+                        <b>A.</b> If you wanted to watch the latest release you went to the cinema theatre and paid for your ticket.<br>
+                        <b>B.</b> Nowadays 4G and Wi-Fi allow us to watch movies even when we are on the move.<br>
+                        <b>C.</b> But did this change occur by choice or necessity?<br>
+                        <b>D.</b> This then becomes the content for the streamers' libraries, which therefore attracts subscribers.<br>
+                        <b>E.</b> Police and legal services eliminated the problem.<br>
+                        <b>F.</b> Clients pay a subscription fee every month for access.<br>
+                        <b>G.</b> However, with the arrival of the internet and the digital format the issue changed from problematic to catastrophic.<br>
+                        <b>H.</b> Where can you get your favourite music or movies?
+                    </div>
+                </div>
+
+                <!-- PART 5 -->
+                <div class="reading-part-content">
+                    <div class="section-title">Part 5 - The Potato</div>
+                    <p>Solanum tuberosum, otherwise known <b>(21)</b> its common name, the potato, is the world's fourth largest food crop, <b>(22)</b> rice, wheat and maize.</p>
+                    <p>It was first cultivated by the Inca-native Americans in Peru somewhere around 8,000 BC to 5,000 B.C. Spanish Conquistadors took over Peru in 1536 and discovered the potato for themselves, and subsequently transported them <b>(23)</b> Europe.</p>
+                    <p>Introduced to Ireland in 1589 it <b>(24)</b> nearly 40 years for the potato to spread to the rest of Europe. It then made its way back across the Atlantic, this time to the North American continent, this time taken by European immigrants to the New World.</p>
+                    <p>Potatoes are easy to grow, contain most of the vitamins required, and provide a <b>(25)</b> yield from the space they occupy than the other staple crops.</p>
+                    <p>The potato became the first vegetable to be grown in space in 1995. The University of Wisconsin and NASA invented the technology aimed at cultivating food <b>(26)</b> astronauts on long space voyages, and, in the future, feeding space colonies.</p>
+                </div>
+
+                <!-- PART 6 -->
+                <div class="reading-part-content">
+                    <div class="section-title">Part 6 - Sleep</div>
+                    <p>Few people doubt the importance of a good night's sleep. But <b>(27)</b> much do you need? Some people famously claim <b>(28)</b> need as little as three hours' sleep per night, while others need nine hours or more just to function properly.</p>
+                    <p>A good way <b>(29)</b> find out how much sleep you need is to find a time such <b>(30)</b> an annual holiday when you can sleep as much as you like. Take a note of the time when you go to sleep and wake up every day for seven days. Write <b>(31)</b> down and finally work out the average you need daily by dividing the total by 7.</p>
+                    <p>To give <b>(32)</b> an idea, people commonly need between six and eight hours' sleep per night. However, everyone is different. Try it and see how much time you need in bed.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- THANH KÉO CO GIÃN -->
+        <div class="resizer" id="dragMe"></div>
+
+        <!-- BÊN PHẢI: CÂU HỎI VÀ CÁC MỤC COPY ĐÁP ÁN -->
+        <div id="right-panel" class="panel">
+            <form id="quiz-form">
+                
+                <!-- PART 1 QUESTIONS -->
+                <div class="section-title">Part 1 (Questions 1-5)</div>
+                
+                <div class="question-block">
+                    <div class="question-title">1. What does the sign in the play area say?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q1" value="A"> A. Adults are not permitted in the children's play area.</label>
+                        <label class="option-item"><input type="radio" name="q1" value="B"> B. Children must always be accompanied by an adult.</label>
+                        <label class="option-item"><input type="radio" name="q1" value="C"> C. Children must stay to the left in the play area.</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">2. Angus is telling Tim to:</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q2" value="A"> A. collect something from the post office.</label>
+                        <label class="option-item"><input type="radio" name="q2" value="B"> B. call Isa.</label>
+                        <label class="option-item"><input type="radio" name="q2" value="C"> C. get some new ID.</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">3. What does the store notice mean?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q3" value="A"> A. Do not try to buy so many things.</label>
+                        <label class="option-item"><input type="radio" name="q3" value="B"> B. The number of people permitted in the shop is less than it was previously.</label>
+                        <label class="option-item"><input type="radio" name="q3" value="C"> C. Only enter after someone has left.</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">4. What does the loyalty card offer?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q4" value="A"> A. Buy ten hot drinks, get one free next time.</label>
+                        <label class="option-item"><input type="radio" name="q4" value="B"> B. Buy nine hot drinks, get one free today.</label>
+                        <label class="option-item"><input type="radio" name="q4" value="C"> C. Buy ten drinks and get a loyalty card.</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">5. What does the notice to employees say?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q5" value="A"> A. The coffee room is only for workers.</label>
+                        <label class="option-item"><input type="radio" name="q5" value="B"> B. The coffee shop is closed today only.</label>
+                        <label class="option-item"><input type="radio" name="q5" value="C"> C. The coffee shop is closed indefinitely.</label>
+                    </div>
+                </div>
+
+                <!-- Summary Part 1 -->
+                <div class="summary-box">
+                    <div class="summary-title">📝 Tổng hợp đáp án Part 1:</div>
+                    <div class="result-string" id="result-part1">Chưa chọn đáp án...</div>
+                    <div class="action-btns">
+                        <button type="button" class="btn btn-update" onclick="generateSummary(1, 5, 'result-part1', 'Part 1')">Cập nhật</button>
+                        <button type="button" class="btn btn-copy" onclick="copyResults('result-part1')">Copy Part 1</button>
+                    </div>
+                </div>
+
+
+                <!-- PART 2 QUESTIONS -->
+                <div class="section-title">Part 2 (Questions 6-10)</div>
+                
+                <div class="question-block">
+                    <div class="question-title">6. Stuart has just finished university and is looking for a room in a cheap, relaxed shared house. He doesn't have a car so he needs to be close to public transport links.</div>
+                    <select name="q6" class="select-box">
+                        <option value="">-- Chọn nhà (A-H) --</option>
+                        <option value="A">Home A</option><option value="B">Home B</option><option value="C">Home C</option><option value="D">Home D</option>
+                        <option value="E">Home E</option><option value="F">Home F</option><option value="G">Home G</option><option value="H">Home H</option>
+                    </select>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">7. Mary Anne is an architect who is looking for something quiet in a rural area with lots of space. She would like to work from home sometimes. She is looking for a home which will accommodate her two pet dogs.</div>
+                    <select name="q7" class="select-box">
+                        <option value="">-- Chọn nhà (A-H) --</option>
+                        <option value="A">Home A</option><option value="B">Home B</option><option value="C">Home C</option><option value="D">Home D</option>
+                        <option value="E">Home E</option><option value="F">Home F</option><option value="G">Home G</option><option value="H">Home H</option>
+                    </select>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">8. Colin is a student and wants to share with one other person who is tidy and responsible. He needs something with parking for his car. He would like his girlfriend to come to visit at the weekend sometimes.</div>
+                    <select name="q8" class="select-box">
+                        <option value="">-- Chọn nhà (A-H) --</option>
+                        <option value="A">Home A</option><option value="B">Home B</option><option value="C">Home C</option><option value="D">Home D</option>
+                        <option value="E">Home E</option><option value="F">Home F</option><option value="G">Home G</option><option value="H">Home H</option>
+                    </select>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">9. Lin needs an apartment for the next three months. She wants to live alone. She would like somewhere close to the centre of town, and would like something which she doesn't have to decorate.</div>
+                    <select name="q9" class="select-box">
+                        <option value="">-- Chọn nhà (A-H) --</option>
+                        <option value="A">Home A</option><option value="B">Home B</option><option value="C">Home C</option><option value="D">Home D</option>
+                        <option value="E">Home E</option><option value="F">Home F</option><option value="G">Home G</option><option value="H">Home H</option>
+                    </select>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">10. Trish needs a house for her husband and two young children, and her dog Rover. She needs parking for two cars, and would prefer to be close to a nursery school and primary school. She needs somewhere for just after the summer, as they will be on holiday in August.</div>
+                    <select name="q10" class="select-box">
+                        <option value="">-- Chọn nhà (A-H) --</option>
+                        <option value="A">Home A</option><option value="B">Home B</option><option value="C">Home C</option><option value="D">Home D</option>
+                        <option value="E">Home E</option><option value="F">Home F</option><option value="G">Home G</option><option value="H">Home H</option>
+                    </select>
+                </div>
+
+                <!-- Summary Part 2 -->
+                <div class="summary-box">
+                    <div class="summary-title">📝 Tổng hợp đáp án Part 2:</div>
+                    <div class="result-string" id="result-part2">Chưa chọn đáp án...</div>
+                    <div class="action-btns">
+                        <button type="button" class="btn btn-update" onclick="generateSummary(6, 10, 'result-part2', 'Part 2')">Cập nhật</button>
+                        <button type="button" class="btn btn-copy" onclick="copyResults('result-part2')">Copy Part 2</button>
+                    </div>
+                </div>
+
+
+                <!-- PART 3 QUESTIONS -->
+                <div class="section-title">Part 3 (Questions 11-15)</div>
+                
+                <div class="question-block">
+                    <div class="question-title">11. Alaina says her experience at college taught her the importance of</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q11" value="A"> A. building up connections in the scene.</label>
+                        <label class="option-item"><input type="radio" name="q11" value="B"> B. being good at her instrument.</label>
+                        <label class="option-item"><input type="radio" name="q11" value="C"> C. continually working.</label>
+                        <label class="option-item"><input type="radio" name="q11" value="D"> D. managing her time.</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">12. How would you best describe Alaina's work status?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q12" value="A"> A. Self-employed, with one main job.</label>
+                        <label class="option-item"><input type="radio" name="q12" value="B"> B. Self-employed, with a variety of jobs.</label>
+                        <label class="option-item"><input type="radio" name="q12" value="C"> C. An employee of an orchestra.</label>
+                        <label class="option-item"><input type="radio" name="q12" value="D"> D. Unemployed.</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">13. What does Alaina say about teaching?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q13" value="A"> A. She is accustomed to teaching now.</label>
+                        <label class="option-item"><input type="radio" name="q13" value="B"> B. She does not have time to teach any more.</label>
+                        <label class="option-item"><input type="radio" name="q13" value="C"> C. She would like to teach in the future.</label>
+                        <label class="option-item"><input type="radio" name="q13" value="D"> D. She hates teaching.</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">14. What does Alaina enjoy most about working with the orchestra?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q14" value="A"> A. The fact that the rehearsals and performances are close to where she lives.</label>
+                        <label class="option-item"><input type="radio" name="q14" value="B"> B. The rehearsals.</label>
+                        <label class="option-item"><input type="radio" name="q14" value="C"> C. Performing.</label>
+                        <label class="option-item"><input type="radio" name="q14" value="D"> D. Seeing friends.</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">15. Which option best summarises why Alaina likes to get home after gigs?</div>
+                    <div class="options-list">
+                        <label class="option-item"><input type="radio" name="q15" value="A"> A. She can't drive and her driver insists on it.</label>
+                        <label class="option-item"><input type="radio" name="q15" value="B"> B. She is unable to sleep in a different bed.</label>
+                        <label class="option-item"><input type="radio" name="q15" value="C"> C. It is impossible to find somewhere to stay.</label>
+                        <label class="option-item"><input type="radio" name="q15" value="D"> D. To save money.</label>
+                    </div>
+                </div>
+
+                <!-- Summary Part 3 -->
+                <div class="summary-box">
+                    <div class="summary-title">📝 Tổng hợp đáp án Part 3:</div>
+                    <div class="result-string" id="result-part3">Chưa chọn đáp án...</div>
+                    <div class="action-btns">
+                        <button type="button" class="btn btn-update" onclick="generateSummary(11, 15, 'result-part3', 'Part 3')">Cập nhật</button>
+                        <button type="button" class="btn btn-copy" onclick="copyResults('result-part3')">Copy Part 3</button>
+                    </div>
+                </div>
+
+
+                <!-- PART 4 QUESTIONS -->
+                <div class="section-title">Part 4 (Questions 16-20)</div>
+                
+                <div class="question-block">
+                    <div class="question-title">16. Gap 16</div>
+                    <select name="q16" class="select-box">
+                        <option value="">-- Chọn câu (A-H) --</option>
+                        <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                        <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                    </select>
+                </div>
+                <div class="question-block">
+                    <div class="question-title">17. Gap 17</div>
+                    <select name="q17" class="select-box">
+                        <option value="">-- Chọn câu (A-H) --</option>
+                        <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                        <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                    </select>
+                </div>
+                <div class="question-block">
+                    <div class="question-title">18. Gap 18</div>
+                    <select name="q18" class="select-box">
+                        <option value="">-- Chọn câu (A-H) --</option>
+                        <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                        <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                    </select>
+                </div>
+                <div class="question-block">
+                    <div class="question-title">19. Gap 19</div>
+                    <select name="q19" class="select-box">
+                        <option value="">-- Chọn câu (A-H) --</option>
+                        <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                        <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                    </select>
+                </div>
+                <div class="question-block">
+                    <div class="question-title">20. Gap 20</div>
+                    <select name="q20" class="select-box">
+                        <option value="">-- Chọn câu (A-H) --</option>
+                        <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                        <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                    </select>
+                </div>
+
+                <!-- Summary Part 4 -->
+                <div class="summary-box">
+                    <div class="summary-title">📝 Tổng hợp đáp án Part 4:</div>
+                    <div class="result-string" id="result-part4">Chưa chọn đáp án...</div>
+                    <div class="action-btns">
+                        <button type="button" class="btn btn-update" onclick="generateSummary(16, 20, 'result-part4', 'Part 4')">Cập nhật</button>
+                        <button type="button" class="btn btn-copy" onclick="copyResults('result-part4')">Copy Part 4</button>
+                    </div>
+                </div>
+
+
+                <!-- PART 5 QUESTIONS -->
+                <div class="section-title">Part 5 (Questions 21-26)</div>
+                
+                <div class="question-block">
+                    <div class="question-title">21.</div>
+                    <div class="options-row">
+                        <label class="option-item"><input type="radio" name="q21" value="A"> A. for</label>
+                        <label class="option-item"><input type="radio" name="q21" value="B"> B. by</label>
+                        <label class="option-item"><input type="radio" name="q21" value="C"> C. at</label>
+                        <label class="option-item"><input type="radio" name="q21" value="D"> D. on</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">22.</div>
+                    <div class="options-row">
+                        <label class="option-item"><input type="radio" name="q22" value="A"> A. after</label>
+                        <label class="option-item"><input type="radio" name="q22" value="B"> B. before</label>
+                        <label class="option-item"><input type="radio" name="q22" value="C"> C. over</label>
+                        <label class="option-item"><input type="radio" name="q22" value="D"> D. when</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">23.</div>
+                    <div class="options-row">
+                        <label class="option-item"><input type="radio" name="q23" value="A"> A. over</label>
+                        <label class="option-item"><input type="radio" name="q23" value="B"> B. on</label>
+                        <label class="option-item"><input type="radio" name="q23" value="C"> C. of</label>
+                        <label class="option-item"><input type="radio" name="q23" value="D"> D. to</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">24.</div>
+                    <div class="options-row">
+                        <label class="option-item"><input type="radio" name="q24" value="A"> A. took</label>
+                        <label class="option-item"><input type="radio" name="q24" value="B"> B. lasted</label>
+                        <label class="option-item"><input type="radio" name="q24" value="C"> C. played</label>
+                        <label class="option-item"><input type="radio" name="q24" value="D"> D. told</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">25.</div>
+                    <div class="options-row">
+                        <label class="option-item"><input type="radio" name="q25" value="A"> A. best</label>
+                        <label class="option-item"><input type="radio" name="q25" value="B"> B. good</label>
+                        <label class="option-item"><input type="radio" name="q25" value="C"> C. worst</label>
+                        <label class="option-item"><input type="radio" name="q25" value="D"> D. higher</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-title">26.</div>
+                    <div class="options-row">
+                        <label class="option-item"><input type="radio" name="q26" value="A"> A. from</label>
+                        <label class="option-item"><input type="radio" name="q26" value="B"> B. in</label>
+                        <label class="option-item"><input type="radio" name="q26" value="C"> C. for</label>
+                        <label class="option-item"><input type="radio" name="q26" value="D"> D. make</label>
+                    </div>
+                </div>
+
+                <!-- Summary Part 5 -->
+                <div class="summary-box">
+                    <div class="summary-title">📝 Tổng hợp đáp án Part 5:</div>
+                    <div class="result-string" id="result-part5">Chưa chọn đáp án...</div>
+                    <div class="action-btns">
+                        <button type="button" class="btn btn-update" onclick="generateSummary(21, 26, 'result-part5', 'Part 5')">Cập nhật</button>
+                        <button type="button" class="btn btn-copy" onclick="copyResults('result-part5')">Copy Part 5</button>
+                    </div>
+                </div>
+
+
+                <!-- PART 6 QUESTIONS -->
+                <div class="section-title">Part 6 (Questions 27-32)</div>
+                
+                <div class="question-block">
+                    <div class="question-title">27. Gap 27</div>
+                    <input type="text" name="q27" class="text-input" placeholder="Nhập một từ (one word)">
+                </div>
+                <div class="question-block">
+                    <div class="question-title">28. Gap 28</div>
+                    <input type="text" name="q28" class="text-input" placeholder="Nhập một từ (one word)">
+                </div>
+                <div class="question-block">
+                    <div class="question-title">29. Gap 29</div>
+                    <input type="text" name="q29" class="text-input" placeholder="Nhập một từ (one word)">
+                </div>
+                <div class="question-block">
+                    <div class="question-title">30. Gap 30</div>
+                    <input type="text" name="q30" class="text-input" placeholder="Nhập một từ (one word)">
+                </div>
+                <div class="question-block">
+                    <div class="question-title">31. Gap 31</div>
+                    <input type="text" name="q31" class="text-input" placeholder="Nhập một từ (one word)">
+                </div>
+                <div class="question-block">
+                    <div class="question-title">32. Gap 32</div>
+                    <input type="text" name="q32" class="text-input" placeholder="Nhập một từ (one word)">
+                </div>
+
+                <!-- Summary Part 6 -->
+                <div class="summary-box">
+                    <div class="summary-title">📝 Tổng hợp đáp án Part 6:</div>
+                    <div class="result-string" id="result-part6">Chưa chọn đáp án...</div>
+                    <div class="action-btns">
+                        <button type="button" class="btn btn-update" onclick="generateSummary(27, 32, 'result-part6', 'Part 6')">Cập nhật</button>
+                        <button type="button" class="btn btn-copy" onclick="copyResults('result-part6')">Copy Part 6</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 1. Chia đôi màn hình co giãn
+        const resizer = document.getElementById('dragMe');
+        const leftSide = document.getElementById('left-panel');
+        const rightSide = document.getElementById('right-panel');
+
+        let x = 0; let leftWidth = 0;
+        const mouseDownHandler = function (e) {
+            x = e.clientX;
+            leftWidth = leftSide.getBoundingClientRect().width;
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('mouseup', mouseUpHandler);
+        };
+        const mouseMoveHandler = function (e) {
+            const dx = e.clientX - x;
+            const containerWidth = resizer.parentNode.getBoundingClientRect().width;
+            const newLeftWidth = ((leftWidth + dx) / containerWidth) * 100;
+            if (newLeftWidth > 15 && newLeftWidth < 85) {
+                leftSide.style.width = `${newLeftWidth}%`;
+                rightSide.style.width = `${100 - newLeftWidth}%`;
+            }
+        };
+        const mouseUpHandler = function () {
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+        };
+        resizer.addEventListener('mousedown', mouseDownHandler);
+
+        // 2. Chức năng Highlight văn bản bên trái
+        const readingContent = document.getElementById('reading-content');
+        readingContent.addEventListener('mouseup', function() {
+            const selection = window.getSelection();
+            if (!selection.isCollapsed && selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                if (readingContent.contains(range.commonAncestorContainer)) {
+                    const span = document.createElement('span');
+                    span.className = 'hl-yellow';
+                    span.title = 'Bấm để xóa highlight';
+                    try { range.surroundContents(span); } catch (e) {}
+                }
+                selection.removeAllRanges();
+            }
+        });
+
+        readingContent.addEventListener('click', function(e) {
+            if (e.target.classList.contains('hl-yellow')) {
+                const span = e.target;
+                const textNode = document.createTextNode(span.textContent);
+                span.parentNode.replaceChild(textNode, span);
+                readingContent.normalize();
+            }
+        });
+
+        // 3. Hàm tổng hợp đáp án theo từng phần
+        function generateSummary(startNum, endNum, elementId, partLabel) {
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+            let resultArr = [];
+
+            for (let i = startNum; i <= endNum; i++) {
+                let ans = formData.get('q' + i);
+                if (!ans || ans.trim() === "") {
+                    ans = '_';
+                }
+                resultArr.push(`${i}-${ans.trim()}`);
+            }
+
+            const resultText = `[${partLabel}] ` + resultArr.join(' | ');
+            document.getElementById(elementId).innerText = resultText;
+            return resultText;
+        }
+
+        // 4. Hàm Copy kết quả vào Clipboard
+        function copyResults(elementId) {
+            const textElement = document.getElementById(elementId);
+            const textToCopy = textElement.innerText;
+
+            if (textToCopy.includes("Chưa chọn")) {
+                alert("Vui lòng bấm nút 'Cập nhật' trước khi copy nhé!");
+                return;
+            }
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("Đã copy đáp án thành công! Bạn hãy dán (Paste) để gửi cho giáo viên.");
+            }).catch(err => {
+                alert("Lỗi copy tự động, vui lòng tự bôi đen dòng chữ để copy.");
+            });
+        }
+    </script>
+</body>
+</html>
